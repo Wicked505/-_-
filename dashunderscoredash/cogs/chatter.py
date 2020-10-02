@@ -22,10 +22,7 @@ MESSAGES = [
     "People don't do it, then they wonder why they get hacked.",
     "Wearing a mask is like installing an antivirus.\n"
     "It's a little uncomfortable when the scan pushes my CPU "
-    "close to 100%, but I'd much rather stay protected.",
-
-    # politics
-    "So are you all voting for Donald Biden or Joe Trump? ",
+    "close to 100%, but I'd much rather stay protected."
 
     # Hawken
     "So the US president lives in your school dining room? Interesting...",
