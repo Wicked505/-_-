@@ -1,0 +1,57 @@
+import requests
+import random
+
+from discord.ext import tasks
+from discord.ext.commands import Bot, Cog
+
+CHAT_CHANNEL_ID = 731267546052952086
+
+# TODO: create an auth system, where -_- sends the showerthought into a private channel/dms
+#  reacts to its own message with a check and an x,
+#  if >1 people react with a check (aka an actual person), it sends to the public channel
+
+
+url = "https://www.reddit.com/r/Showerthoughts/top/?t=day"
+dat = {'q': 'goog'}
+soup = requests.get(url, params=dat, headers={'User-Agent': 'Chrome/5.0'})
+# gets reddit.com/r/showerthoughts, turns the content into an HTML5 doc accessible by doing soup.content
+
+
+content = str(soup.content)
+# turn the content into a string
+part1 = content.partition('<h3 class="_eYtD2XCVieq6emjKBH3m">')
+# turns the string into a list (a very messy one, with the post mixing in with code)
+unsnip = str(part1[2])
+# basically the first bit of the third element is the actual post text,
+finalmessage = str(unsnip.partition('</h3')[0])
+# and to clean it up we can partition using the ending element text
+
+# boom, a post, in a nice, clean, string.
+
+MESSAGES = [finalmessage]
+# doing this because 1. cant figure out how to make the variable global, 2. continuity, 3. i dont have a third reason.
+
+
+class ShowerThoughts(Cog):
+    """Sends random messages into the general channel. For lolz."""
+    # i have no idea what any of this does, so i'm not going to comment on it. just know that *somehow* it gets this
+    # to the discord channel, every 24 hours.
+    def __init__(self, bot: Bot):
+        self.bot = bot
+        self.channel = None
+        self.bot.loop.create_task(self.start())
+
+    async def start(self):
+        await self.bot.wait_until_ready()
+        self.channel = self.bot.get_channel(CHAT_CHANNEL_ID)
+        self.chat.start()
+        import asyncio
+        await asyncio.sleep(2)
+
+    @tasks.loop(hours=24.0)
+    async def chat(self):
+        await self.channel.send(random.choice(MESSAGES))
+
+
+def setup(bot):
+    bot.add_cog(ShowerThoughts(bot))
